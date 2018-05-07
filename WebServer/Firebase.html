@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<style>
+			
+		</style>
+	<head/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+	<script type="text/template" id="cardTemplate">
+		<table>
+		<tr>
+			<td>{{StudentID}}</td><td>{{Teacher1}}</td><td>{{OffClass}}</td><td>{{Room}}</td><td>{{Period}}</td>
+		</tr>
+		</table>
+	</script>
+	<script>
+	var data;
+	function loadJSON(){
+		$.getJSON("https://bhsdata-51353.firebaseio.com/data.json",function(results){
+			data = results;
+			
+		})
+	}
+	
+	function displayData(){
+		var build= "";
+		var output = document.getElementById("output");
+		var template = document.getElementById("cardTemplate").innerHTML;
+		var room = document.getElementById("Room");
+		var period = document.getElementById("Period");
+		var offClass = document.getElementById("OffClass");
+		for(var key in data){
+			if(data[key].Room.indexOf(room.value) != -1 &&
+			data[key].Period.indexOf(period.value) != -1 &&
+			data[key].OffClass.indexOf(offClass.value) != -1){
+				build += Mustache.render(template,data[key]);
+			}
+		}
+		output.innerHTML = build;
+	}
+	</script>
+	<body onload = "loadJSON()" >
+		<input id="Room" placeholder= "Room">
+		<input id="Period" placeholder= "Period">
+		<input id="OffClass" placeholder= "Official Class">
+		<button onClick="displayData()">Display</button>
+		<table id="output" border=1></table>
+	</body>
+</html>
+
